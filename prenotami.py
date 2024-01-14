@@ -65,7 +65,10 @@ def prenota_job():
     login_page = True
     while login_page == True:
         try:
+            # Goes to webpage
             driver.get('https://prenotami.esteri.it/')
+
+            # Enters email by clicking on field and typing
             clickable = WebDriverWait(driver, wait_time).until(EC.presence_of_element_located((By.XPATH, usr_xpath)))
             webdriver.ActionChains(driver)\
                 .move_to_element(clickable)\
@@ -75,7 +78,7 @@ def prenota_job():
                 .send_keys(usrnme)\
                 .perform()
             
-            # Enters password
+            # Enters password, same way
             clickable2 = driver.find_element(By.XPATH, pass_xpath)
             webdriver.ActionChains(driver)\
                 .move_to_element(clickable2)\
@@ -132,8 +135,6 @@ def prenota_job():
     else:
         current_time = dt.datetime.now()
         print(f'No available appointments at {current_time.strftime("%H:%M:%S")}.')
-        next_time = current_time + dt.timedelta(seconds=next_sched)
-        print(f'Checking again at {next_time.strftime("%H:%M:%S")}.')
     
         # Closes browser window
         driver.close()
@@ -176,6 +177,8 @@ schedule.every(30).to(60).minutes.do(prenota_job)
 while True:
     # Schedules jobs
     schedule.run_pending()
+    next_runtime = schedule.next_run().strftime("%H:%M:%S")
+    print(f'Checking again at {next_runtime}.')
     next_sched = schedule.idle_seconds()
     time.sleep(next_sched)
 
