@@ -116,15 +116,18 @@ def prenota_job():
     # Gets current url
     url = driver.current_url
 
-    # Sends text if able to navigate directly to CIE booking screen
+    # If able to navigate directly to booking screen:
     if url == booking_screen_url:
         print('Appointments available!')
-        message = client.messages \
-        .create(
-             body=f'Prenotami appointments available! {url}',
-             from_=twilio_from,
-             to=twilio_to
-         )
+        
+        # Sends text if option enabled
+        if twilio_text == True:
+            message = client.messages \
+            .create(
+                 body=f'Prenotami appointments available! {url}',
+                 from_=twilio_from,
+                 to=twilio_to
+             )
 
         # Closes browser window
         driver.close()
@@ -133,8 +136,10 @@ def prenota_job():
         schedule.CancelJob
         
     else:
+        # If no appointments are found, print to command line and run again
         current_time = dt.datetime.now()
         print(f'No available appointments at {current_time.strftime("%H:%M:%S")}.')
+        
         next_runtime = schedule.next_run().strftime("%H:%M:%S")
         print(f'Checking again at {next_runtime}.')
     
