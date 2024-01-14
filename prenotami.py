@@ -135,6 +135,8 @@ def prenota_job():
     else:
         current_time = dt.datetime.now()
         print(f'No available appointments at {current_time.strftime("%H:%M:%S")}.')
+        next_runtime = schedule.next_run().strftime("%H:%M:%S")
+        print(f'Checking again at {next_runtime}.')
     
         # Closes browser window
         driver.close()
@@ -177,8 +179,6 @@ schedule.every(30).to(60).minutes.do(prenota_job)
 while True:
     # Schedules jobs
     schedule.run_pending()
-    next_runtime = schedule.next_run().strftime("%H:%M:%S")
-    print(f'Checking again at {next_runtime}.')
     next_sched = schedule.idle_seconds()
     time.sleep(next_sched)
 
