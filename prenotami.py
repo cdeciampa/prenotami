@@ -139,9 +139,6 @@ def prenota_job():
         # If no appointments are found, print to command line and run again
         current_time = dt.datetime.now()
         print(f'No available appointments at {current_time.strftime("%H:%M:%S")}.')
-        
-        next_runtime = schedule.next_run().strftime("%H:%M:%S")
-        print(f'Checking again at {next_runtime}.')
     
         # Closes browser window
         driver.close()
@@ -179,12 +176,13 @@ if twilio_text == True:
         raise ValueError(f"Change Twilio auth token from default: {auth_token}.")
 
 # Run job every 30-60 minutes
-schedule.every(30).to(60).minutes.do(prenota_job)
+p_job = schedule.every(30).to(60).minutes.do(check_appts)
 
 while True:
-    # Schedules jobs
     schedule.run_pending()
     next_sched = schedule.idle_seconds()
+    next_runtime = p_job.next_run.strftime("%H:%M:%S")
+    print(f'Checking again at {next_runtime}.')
     time.sleep(next_sched)
 
 
